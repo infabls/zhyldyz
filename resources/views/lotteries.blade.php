@@ -13,6 +13,9 @@
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
         <link href="{{ mix('css/frontend.css') }}" rel="stylesheet">
         <style>
+            .btn-danger > a {
+                color: white;
+            }
             html, body {
                 background-color: #fff;
                 color: #636b6f;
@@ -71,7 +74,6 @@
     <body>
         @include('includes.partials.read-only')
         @include('includes.partials.logged-in-as')
-        @include('includes.partials.announcements')
 
         <div id="app" class="flex-center position-ref full-height">
             <div class="top-right links">
@@ -92,17 +94,24 @@
 
             <div class="content">
                 @include('includes.partials.messages')
+                
+                <h1>Список всех лоттерей. Всего ({{count($lotteries)}})  </h1>
 
-                <div class="title m-b-md">
-                    <example-component></example-component>
-                </div><!--title-->
-
-                <div class="links">
-                    <a href="/lotteries">Все лотереи</a>
-                    <a href="/lottery/1">Лотерея 1</a>
-                    <a href="/tickets">Мои билеты</a>
-                    <a href="/results">Результаты розыгрышей</a>
-                </div><!--links-->
+                @foreach ($lotteries as $lottery)
+                     <p>Описание: {{$lottery->description}}</p>
+                    @if ($lottery->ticket_count > 0)
+                    <p>Количество участников: {{$lottery->ticket_count}}</p>
+                    @else
+                    <p>Пока ни одного участника. Хотите стать первым?</p>
+                    @endif
+                    <p>Дата начала: {{$lottery->starts_at}}</p>
+                    <p>Дата окончания: {{$lottery->ends_at}}</p>
+                    <p>Цена участия: {{$lottery->price}}</p>
+                    <p>Уже денег: {{$lottery->price * $lottery->ticket_count * 0.8}}</p>
+                    <a href="/lottery/{{$lottery->id}}">Подробнее</a>
+                        <div class="btn btn-danger"><a href="/lottery/{{$lottery->id}}/create">Участвовать</a></div>
+                @endforeach
+               
             </div><!--content-->
         </div><!--app-->
 

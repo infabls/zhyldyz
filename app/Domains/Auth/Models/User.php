@@ -108,6 +108,14 @@ class User extends Authenticatable implements MustVerifyEmail, TwoFactorAuthenti
     ];
 
     /**
+     * Получить запись с номером телефона пользователя.
+     */
+    public function tickets()
+    {
+        return $this->hasMany('App\Models\Tickets');
+    }
+
+    /**
      * Send the password reset notification.
      *
      * @param  string  $token

@@ -1,5 +1,5 @@
 <template>
-    <span>Laravel Boilerplate</span>
+    <span>Разводняк ебаный</span>
 </template>
 
 <script>

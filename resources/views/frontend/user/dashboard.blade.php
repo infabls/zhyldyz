@@ -12,7 +12,8 @@
                     </x-slot>
 
                     <x-slot name="body">
-                        @lang('You are logged in!')
+                        @lang('You are logged in!') <br>
+                        <a href="/tickets">Мои билеты</a>
                     </x-slot>
                 </x-frontend.card>
             </div><!--col-md-10-->
