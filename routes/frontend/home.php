@@ -50,6 +50,10 @@ Route::delete('/tickets/{id}', function ($id) {
     	if ($ticket->status == 'paid') {
     		return back()->with('status', 'Вы не можете удалить оплаченный билет');
     	}
+        // что этот билет выиграл
+        if ($ticket->status == 'winner') {
+            return back()->with('status', 'Вы не можете удалить выигрышный билет');
+        }
         $ticket->delete();
         return back()->with('status', 'Билет был удален');
     }
