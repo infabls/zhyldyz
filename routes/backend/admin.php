@@ -17,8 +17,9 @@ Route::get('dashboard', [DashboardController::class, 'index'])
 
 
 // все лотереи
+    
 // создать лотерею
-
+    
 
 // проведение розыгрыша
 Route::get('draw/{id}', function ($id) {
@@ -26,6 +27,10 @@ Route::get('draw/{id}', function ($id) {
 	// вытаскиваем лотерею по id
 	$lottery = Lottery::where('id', '=', $id)->firstOrFail();
 
+	// проверка на минимальное количество участников
+	if ($lottery->users_count < 10) {
+		return redirect('/admin/dashboard')->with('status', 'Недостаточно участников');
+	}
 	// проверка на то, была ли проведена лотерея
 	if($lottery->status == 'ended') {
 		return redirect('/admin/dashboard')->with('status', 'Розыгрыш уже проведен');
@@ -45,6 +50,7 @@ Route::get('draw/{id}', function ($id) {
 	// данные о пользователе победившем
 	$user = User::find($lottery->winner['user_id']);
 
+	// уведомить пользователя всеми методами
 
 
 	// помечаем билет выигрышным
@@ -52,9 +58,15 @@ Route::get('draw/{id}', function ($id) {
 	$ticket->status = 'winner';
     $ticket->save();
 
+    // положить билеты этой лотереи в таблицу архива лотерей, у которых не забрали выигрыш
+
+    // положить лоттерею в архива лотерей
+
 
     return view('backend.draw',[ 
     	'lottery' => $lottery,
     	'user' => $user,
 	]);
 })->name('admin.draw');
+
+
