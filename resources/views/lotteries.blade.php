@@ -1,124 +1,110 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ appName() }}</title>
-        <meta name="description" content="@yield('meta_description', appName())">
-        <meta name="author" content="@yield('meta_author', 'Anthony Rappa')">
-        @yield('meta')
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ appName() }}</title>
+    <meta name="description" content="@yield('meta_description', appName())">
+    <meta name="author" content="@yield('meta_author', 'Anthony Rappa')">
+    @yield('meta')
+    @include('includes.partials.head')
+    @include('includes.partials.ga')
+</head>
+<body>
+ <!-- LOADER -->
+ <div id="loader">
+  <div class="position-center-center">
+    <div class="loader"></div>
+</div>
+</div>
+<!-- Page Wrapper -->
+<div id="wrap"> 
+    @include('includes.partials.messages')
+    <!-- Header -->
+    @include('includes.partials.header')
+    <!-- Nav -->
+    @include('includes.partials.flynav')
 
-        @stack('before-styles')
-        <link rel="dns-prefetch" href="//fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-        <link href="{{ mix('css/frontend.css') }}" rel="stylesheet">
-        <style>
-            .btn-danger > a {
-                color: white;
-            }
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family: 'Nunito', sans-serif;
-                font-weight: 200;
-                height: 100vh;
-                margin: 0;
-            }
+    {{--     <div id="app" class="flex-center position-ref full-height"> --}}
+{{--         <div class="top-right links">
+            @auth
+            @if ($logged_in_user->isUser())
+            <a href="{{ route('frontend.user.dashboard') }}">@lang('Dashboard')</a>
+            @endif
 
-            .full-height {
-                height: 100vh;
-            }
+            <a href="{{ route('frontend.user.account') }}">@lang('Account')</a>
+            @else
+            <a href="{{ route('frontend.auth.login') }}">@lang('Login')</a>
 
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
+            @if (config('boilerplate.access.user.registration'))
+            <a href="{{ route('frontend.auth.register') }}">@lang('Register')</a>
+            @endif
+            @endauth
+        </div><!--top-right--> --}}
 
-            .position-ref {
-                position: relative;
-            }
+        <div id="content" class="content">
+            @include('includes.partials.messages')
+            <!-- Heading -->
+            <!-- Pricing -->
+            <section class="pad-t-b-130">
+              <div class="container">  
+                  <div class="heading-block margin-bottom-30">
+                      <h3>Список всех лоттерей. Всего ({{count($lotteries)}})</h3>
+                      <hr>
+                  </div>
+                  <div class="intro-small col-md-8 center-auto">
+                      <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout..</p>
+                  </div>             
+                  <div class="pricing">
+                      <div class="row"> 
 
-            .top-right {
-                position: absolute;
-                right: 10px;
-                top: 18px;
-            }
+                          @foreach ($lotteries as $lottery)
 
-            .content {
-                text-align: center;
-            }
 
-            .title {
-                font-size: 84px;
-            }
+                          <!-- Basic -->
+                          <div class="col-md-4">
+                              <article class="animate fadeIn" data-wow-delay="0.4s">
+                                <div class="price-head"> <span class="plan-tittle">Лотерея</span> <span class="plan-price">{{$lottery->price}}<span>тг</span></span> </div>
+                       
+                                <ul>
+                                  @if ($lottery->ticket_count > 0)
+                                  <li>Описание: {{$lottery->description}}</li>
+                                  <li>Количество участников: {{$lottery->ticket_count}}<i class="fa fa-check"></i></li>
+                                  @else
+                                  <li>Пока ни одного участника. Хотите стать первым?<i class="fa fa-check"></i></li>
+                                  @endif
+                                  <li><p>Дата начала: {{$lottery->starts_at}}</p><i class="fa fa-check"></i></li>
+                                  <li><p>Дата окончания: {{$lottery->ends_at}}</p><i class="fa fa-check"></i></li>
+                                  <li><p>Цена участия: {{$lottery->price}}</p><i class="fa fa-check"></i></li>
+                                  <li><p>Уже денег: {{$lottery->price * $lottery->ticket_count * 0.8}}</p><i class="fa fa-check"></i></li>
+                              </ul>
+                              <a href="/lottery/{{$lottery->id}}" class="btn btn-inverse">Подробнее</a> 
+                              <a href="/lottery/{{$lottery->id}}/create" class="btn btn-inverse">Участвовать</a>
+                          </article>
+                      </div>
 
-            .links > a {
-                color: #636b6f;
-                padding: 0 25px;
-                font-size: 13px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-                text-transform: uppercase;
-            }
 
-            .m-b-md {
-                margin-bottom: 30px;
-            }
-        </style>
-        @stack('after-styles')
 
-        @include('includes.partials.ga')
-    </head>
-    <body>
-        @include('includes.partials.read-only')
-        @include('includes.partials.logged-in-as')
+                      @endforeach
+                  </div>
+              </div>
+          </div>
+      </section>
+  </div><!--content-->
+{{-- </div>app --}}
+@include('includes.partials.footer')
 
-        <div id="app" class="flex-center position-ref full-height">
-            <div class="top-right links">
-                @auth
-                    @if ($logged_in_user->isUser())
-                        <a href="{{ route('frontend.user.dashboard') }}">@lang('Dashboard')</a>
-                    @endif
+<!-- GO TO TOP  --> 
+<a href="#" class="cd-top"><i class="fa fa-angle-up"></i></a> 
+<!-- GO TO TOP End --> 
+</div>
+<!-- End Page Wrapper --> 
+@stack('before-scripts')
+<script src="{{ mix('js/manifest.js') }}"></script>
+<script src="{{ mix('js/vendor.js') }}"></script>
+<script src="{{ mix('js/frontend.js') }}"></script>
 
-                    <a href="{{ route('frontend.user.account') }}">@lang('Account')</a>
-                @else
-                    <a href="{{ route('frontend.auth.login') }}">@lang('Login')</a>
-
-                    @if (config('boilerplate.access.user.registration'))
-                        <a href="{{ route('frontend.auth.register') }}">@lang('Register')</a>
-                    @endif
-                @endauth
-            </div><!--top-right-->
-
-            <div class="content">
-                @include('includes.partials.messages')
-                
-                <h1>Список всех лоттерей. Всего ({{count($lotteries)}})  </h1>
-
-                @foreach ($lotteries as $lottery)
-                     <p>Описание: {{$lottery->description}}</p>
-                    @if ($lottery->ticket_count > 0)
-                    <p>Количество участников: {{$lottery->ticket_count}}</p>
-                    @else
-                    <p>Пока ни одного участника. Хотите стать первым?</p>
-                    @endif
-                    <p>Дата начала: {{$lottery->starts_at}}</p>
-                    <p>Дата окончания: {{$lottery->ends_at}}</p>
-                    <p>Цена участия: {{$lottery->price}}</p>
-                    <p>Уже денег: {{$lottery->price * $lottery->ticket_count * 0.8}}</p>
-                    <a href="/lottery/{{$lottery->id}}">Подробнее</a>
-                        <div class="btn btn-danger"><a href="/lottery/{{$lottery->id}}/create">Участвовать</a></div>
-                @endforeach
-               
-            </div><!--content-->
-        </div><!--app-->
-
-        @stack('before-scripts')
-        <script src="{{ mix('js/manifest.js') }}"></script>
-        <script src="{{ mix('js/vendor.js') }}"></script>
-        <script src="{{ mix('js/frontend.js') }}"></script>
-        @stack('after-scripts')
-    </body>
+@include('includes.footerscripts')
+@stack('after-scripts')
+</body>
 </html>
