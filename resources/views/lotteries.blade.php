@@ -67,14 +67,14 @@
                                 <div class="price-head"> <span class="plan-tittle">Лотерея</span> <span class="plan-price">{{$lottery->price}}<span>тг</span></span> </div>
                        
                                 <ul>
+                                  <li>{{$lottery->description}}</li>
                                   @if ($lottery->ticket_count > 0)
-                                  <li>Описание: {{$lottery->description}}</li>
                                   <li>Количество участников: {{$lottery->ticket_count}}<i class="fa fa-check"></i></li>
                                   @else
                                   <li>Пока ни одного участника. Хотите стать первым?<i class="fa fa-check"></i></li>
                                   @endif
                                   <li><p>Дата начала: {{$lottery->starts_at}}</p><i class="fa fa-check"></i></li>
-                                  <li><p>Дата окончания: {{$lottery->ends_at}}</p><i class="fa fa-check"></i></li>
+                                  <li><p>Розыгрыш: {{$lottery->ends_at}}</p><i class="fa fa-check"></i></li>
                                   <li><p>Цена участия: {{$lottery->price}}</p><i class="fa fa-check"></i></li>
                                   <li><p>Уже денег: {{$lottery->price * $lottery->ticket_count * 0.8}}</p><i class="fa fa-check"></i></li>
                               </ul>
