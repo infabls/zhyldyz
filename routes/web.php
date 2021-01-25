@@ -51,34 +51,6 @@ Route::get('lottery/{id}', function ($id) {
 	]);
 });
 
-// форма создания билета без регистрации
-Route::get('lottery/{id}/create', function ($id) {
-	$lottery = Lottery::where('id', '=', $id)->firstOrFail();
-
-	// завершена ли лотерея
-	if ($lottery->status == 'ended') {
-		return redirect('/results/' . $id)->with('status', 'Лотерея уже закончена(( Примите участие в другой');
-	}
-		return view('ticket_create',[ 
-		'lottery' => $lottery,
-	]);
-});
-
-// Прием заявки на создание тикета
-Route::post('lottery/{id}/create', function (Request $request, $id) {
-	$ticket = new tickets;
-	if (Auth::id()) {
-		$ticket->user_id = Auth::id();
-	} else {
-		$ticket->user_id = 1;
-	}
-	$ticket->lottery_id = $id;
-    $ticket->code = $request->code;
-    $ticket->status = 'not paid';
-    $ticket->created_at = now();
-    $ticket->save();
-    return back()->with('status', 'Ваш билет создан. Хотите еще?');
-});
 
 /*
  * Frontend Routes

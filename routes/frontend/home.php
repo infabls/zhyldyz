@@ -4,6 +4,7 @@ use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\TermsController;
 use Tabuna\Breadcrumbs\Trail;
 use App\Models\Tickets;
+use App\Models\Lottery;
 use App\Domains\Auth\Models\User;
 
 /*
@@ -22,6 +23,41 @@ Route::get('terms', [TermsController::class, 'index'])
         $trail->parent('frontend.index')
             ->push(__('Terms & Conditions'), route('frontend.pages.terms'));
     });
+
+
+// форма создания билета 
+Route::get('lottery/{id}/create', function ($id) {
+    if (!Auth::user()) {
+        return redirect('login')->with('status', 'Для участия в лотерее нужно зарегистрироваться');
+    }
+    $lottery = Lottery::where('id', '=', $id)->firstOrFail();
+
+    // завершена ли лотерея
+    if ($lottery->status == 'ended') {
+        return redirect('/results/' . $id)->with('status', 'Лотерея уже закончена(( Примите участие в другой');
+    }
+        return view('ticket_create',[ 
+        'lottery' => $lottery,
+    ]);
+});
+
+
+// Прием заявки на создание тикета
+Route::post('lottery/{id}/create', function (Request $request, $id) {
+    $ticket = new tickets;
+    if (Auth::id()) {
+        $ticket->user_id = Auth::id();
+    } else {
+        $ticket->user_id = 1;
+    }
+    $ticket->lottery_id = $id;
+    $ticket->code = $request->code;
+    $ticket->status = 'not paid';
+    $ticket->created_at = now();
+    $ticket->save();
+    return back()->with('status', 'Ваш билет создан. Хотите еще?');
+});
+
 
 // вывод своих билетов
 Route::get('tickets', function () {
