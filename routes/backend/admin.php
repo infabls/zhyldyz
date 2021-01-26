@@ -27,10 +27,14 @@ Route::get('dashboard', [DashboardController::class, 'index'])
 Route::get('draw/{id}', function ($id) {
 
 	// вытаскиваем лотерею по id
-	$lottery = Lottery::where('id', '=', $id)->firstOrFail();
+	$lottery = Lottery::where('id', '=', $id)->withCount('ticket')->firstOrFail();
 
+    // считаем количество активных билетов
+    $tickets_count = Tickets::where('lottery_id', '=', $id)
+    ->where('status', '=', 'paid')
+    ->count();
 	// проверка на минимальное количество участников
-	if ($lottery->users_count < 10) {
+	if ($lottery->users_count > $tickets_count) {
 		return redirect('/admin/dashboard')->with('status', 'Недостаточно участников');
 	}
 	// проверка на то, была ли проведена лотерея

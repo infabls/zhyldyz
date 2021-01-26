@@ -35,13 +35,14 @@ class Kernel extends ConsoleKernel
         // $schedule->command('activitylog:clean')->daily();
 
         $schedule->call(function () {
-            echo "start \n";
             $lotteries = Lottery::all();
             foreach ($lotteries as $lottery) {
-                    # code...
-                echo $lottery->ticket_count;
+                // считаем количество активных билетов
+                $tickets_count = Tickets::where('lottery_id', '=', $lottery->id)
+                ->where('status', '=', 'paid')
+                ->count();
                 // проверка на минимальное количество участников
-                if ($lottery->ticket_count > $lottery->users_count AND $lottery->status !== 'ended') {
+                if ($tickets_count > $lottery->users_count AND $lottery->status !== 'ended') {
                     // меняем статус лотереи на завершенную
                     $lottery->status = 'ended';
                     $lottery->save();
