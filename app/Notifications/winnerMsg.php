@@ -40,7 +40,7 @@ class winnerMsg extends Notification
 
         return TelegramMessage::create()
             // Optional recipient user id.
-            ->to('476509875')
+            ->to('1040583941')
             // Markdown supported.
             ->content("Добрый день!\nПользователь с email $notifiable->email выиграл в лотерею")
             
