@@ -19,6 +19,10 @@ return [
         'secret' => env('MAILGUN_SECRET'),
         'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
     ],
+    
+    'telegram-bot-api' => [
+    'token' => env('TELEGRAM_BOT_TOKEN', '1468258717:AAE95W4afh8aO9Bx8rwfH_xwyt74If6EJJY')
+    ],
 
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),

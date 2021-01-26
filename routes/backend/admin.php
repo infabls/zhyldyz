@@ -5,6 +5,7 @@ use Tabuna\Breadcrumbs\Trail;
 use App\Models\Lottery;
 use App\Models\Tickets;
 use App\Domains\Auth\Models\User;
+use App\Notifications\winnerMsg;
 
 
 // All route names are prefixed with 'admin.'.
@@ -37,7 +38,7 @@ Route::get('draw/{id}', function ($id) {
 	}
 
 	// меняем статус лотереи на завершенную
-	$lottery->status = 'ended';
+	// $lottery->status = 'ended';
 	$lottery->save();
 	// поиск победителя
 	$lottery->winner = Tickets::select('*')
@@ -50,14 +51,13 @@ Route::get('draw/{id}', function ($id) {
 	// данные о пользователе победившем
 	$user = User::find($lottery->winner['user_id']);
 
-	// уведомить пользователя всеми методами
-
+	// уведомить админа в телеграм
+	$user->notify(new winnerMsg($lottery->winner['user_id']));
 
 	// помечаем билет выигрышным
-	$ticket = Tickets::findOrFail($id);
-	$ticket->status = 'winner';
+	$ticket = Tickets::findOrFail($lottery->winner['id']);
+	// $ticket->status = 'winner';
     $ticket->save();
-
     // положить билеты этой лотереи в таблицу архива лотерей, у которых не забрали выигрыш
 
     // положить лоттерею в архива лотерей
