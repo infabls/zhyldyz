@@ -35,32 +35,70 @@ class Kernel extends ConsoleKernel
         // $schedule->command('activitylog:clean')->daily();
 
         $schedule->call(function () {
-            for ($i=1   ; $i < 4; $i++) { 
-                $lottery = Lottery::where('id', '=', $i)->withCount('ticket')->firstOrFail();
+            echo "start \n";
+            $lotteries = Lottery::all();
+            foreach ($lotteries as $lottery) {
+                    # code...
+                echo $lottery->ticket_count;
                 // проверка на минимальное количество участников
                 if ($lottery->ticket_count > $lottery->users_count AND $lottery->status !== 'ended') {
                     // меняем статус лотереи на завершенную
                     $lottery->status = 'ended';
                     $lottery->save();
+
                     // поиск победителя
                     $lottery->winner = Tickets::select('*')
-                        ->where('lottery_id', '=', $i)
+                        ->where('lottery_id', '=', $id)
                         ->where('status', '=', 'paid')
                         ->inRandomOrder()
                         ->first(1)
                         ->toArray();
+
                     // данные о пользователе победившем
                     $user = User::find($lottery->winner['user_id']);
 
-                    // уведомить пользователя всеми методами
-
-                    // уведомить админа о победе
-                    $user->notify(new winnerMsg($lottery));
+                    // уведомить админа в телеграм
+                    $user->notify(new winnerMsg($lottery->winner['user_id']));
 
                     // помечаем билет выигрышным
                     $ticket = Tickets::findOrFail($lottery->winner['id']);
                     $ticket->status = 'winner';
                     $ticket->save();
+
+                    // удалить все невыигрышные билеты
+                    Tickets::where('lottery_id', $lottery->id)
+                    ->where('status', '!=', 'winner')
+                    // ->get();
+                    ->delete();
+                    // положить лотерею в архив лотерей
+                    LotteriesArchive::create([
+                            'id' => $lottery->id,
+                            'name' => $lottery->name,
+                            'urlKey' => $lottery->urlKey,
+                            'starts_at' => $lottery->starts_at,
+                            'ends_at' => now(),
+                            'price' => $lottery->price,
+                            'description' => $lottery->description,
+                            'winner_user_id' => $lottery->winner['user_id'],
+                            'winner_ticket_id' => $lottery->winner['id'],
+                        ]);
+                    // создать новую лотерею на место старой
+                    Lottery::create([
+                            'name' => $lottery->name,
+                            'urlKey' => $lottery->urlKey,
+                            'starts_at' => now(),
+                            'ends_at' => now()->subDays(30),
+                            'price' => $lottery->price,
+                            'status' => 'on',
+                            'description' => $lottery->description,
+                            'users_count' => $lottery->users_count,
+                        ]);
+
+                    // удаляем лотерею, если все сработало
+                    $lottery->delete();
+
+                    // вывод в консоль
+                    echo "Лотерея '$lottery->name' проведена. Победил юзер с id $lottery->winner['user_id'] и билетом $lottery->winner['id'] \n";
                 } else {
                     echo "Лотерея '$lottery->name' не соответствует условиям розыгрыша \n";
                 }
