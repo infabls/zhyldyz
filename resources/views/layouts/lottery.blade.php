@@ -18,7 +18,8 @@
         </div>
     </div>
     <!-- Page Wrapper -->
-    <div id="wrap"> 
+    <div id="wrap" class="canvas-menu-left"> 
+        @include('includes.partials.offcanvasnav')
         @include('includes.partials.messages')
         <!-- Header -->
         @include('includes.partials.header')
@@ -44,7 +45,12 @@
 
 
 {{-- </div>app --}}
+
+<main class="cd-main-content">
 @yield('content')
+</main>
+
+
 @include('includes.partials.footer')
 
         <!-- GO TO TOP  --> 
