@@ -13,7 +13,7 @@ class CreateLotteryArchiveTable extends Migration
      */
     public function up()
     {
-        Schema::create('lotteries_archive', function (Blueprint $table) {
+        Schema::create('lotteries_archives', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('urlKey');

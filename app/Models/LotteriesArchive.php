@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class LotteriesArchive extends Model
 {
-	protected $fillable = ['id'];
+	protected $guarded = [];
     use HasFactory;
 }
