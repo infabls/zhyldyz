@@ -6,6 +6,7 @@ use Tabuna\Breadcrumbs\Trail;
 use App\Models\Tickets;
 use App\Models\Lottery;
 use App\Domains\Auth\Models\User;
+use Illuminate\Http\Request;
 
 /*
  * Frontend Controllers
