@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-
+use App\Models\Lottery;
 /**
  * Class HomeController.
  */
@@ -14,6 +14,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('frontend.index');
+    	$lottery = Lottery::where('status', '=', 'on')->withCount('ticket')->paginate();
+        return view('frontend.index',[ 
+			'lotteries' => $lottery,
+		]);
     }
 }
