@@ -1,30 +1,8 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ appName() }}</title>
-    <meta name="description" content="@yield('meta_description', appName())">
-    <meta name="author" content="@yield('meta_author', 'Anthony Rappa')">
-    @yield('meta')
-@include('includes.partials.head')
-@include('includes.partials.ga')
-</head>
-<body>
-    <!-- LOADER -->
-    <div id="loader">
-      <div class="position-center-center">
-        <div class="loader"></div>
-    </div>
-</div>
-<!-- Page Wrapper -->
-<div id="wrap"> 
-    @include('includes.partials.messages')
-    <!-- Header -->
-    @include('includes.partials.header')
-    <!-- Nav -->
-    @include('includes.partials.flynav')
-    <!-- Slider -->
+@extends('layouts.lottery')
+
+@section('title', 'Все лотереи от компании dfw.kz')
+
+@section('content')
     <section class="home-slider">
         <div class="tp-banner-container">
           <div class="tp-banner">
@@ -730,21 +708,4 @@
 
 
 </div><!--app--> --}}
-
-
-@include('includes.partials.footer')
-
-<!-- GO TO TOP  --> 
-<a href="#" class="cd-top"><i class="fa fa-angle-up"></i></a> 
-<!-- GO TO TOP End --> 
-</div>
-<!-- End Page Wrapper --> 
-@stack('before-scripts')
-<script src="{{ mix('js/manifest.js') }}"></script>
-<script src="{{ mix('js/vendor.js') }}"></script>
-<script src="{{ mix('js/frontend.js') }}"></script>
-
-@include('includes.footerscripts')
-@stack('after-scripts')
-</body>
-</html>
+@endsection
